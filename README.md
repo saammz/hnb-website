@@ -1,73 +1,89 @@
-# Welcome to your Lovable project
+# 🛠️ Project Name
 
-## Project info
+HnB Website built with **Vite**, **TypeScript**, **Tailwind CSS**, and **shadcn-ui**.
 
-**URL**: https://lovable.dev/projects/46c15dd3-85db-4673-89d3-c0dd92c13533
+## 🚀 Getting Started
 
-## How can I edit this code?
+This guide will help you set up, run, and build the project locally.
 
-There are several ways of editing your application.
+### Prerequisites
 
-**Use Lovable**
+Make sure you have the following installed on your system:
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/46c15dd3-85db-4673-89d3-c0dd92c13533) and start prompting.
+- **Node.js** (v16 or later): https://nodejs.org  
+- **npm** (comes with Node.js) or **Yarn**
 
-Changes made via Lovable will be committed automatically to this repo.
+To install Node.js using nvm:
 
-**Use your preferred IDE**
+```bash
+nvm install node
+```
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Setup, Run, and Build
 
 Follow these steps:
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+```bash
+# 1. Clone the repository
+git clone <GIT REPO>
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+# 2. Navigate to the project folder
+cd your-project
 
-# Step 3: Install the necessary dependencies.
-npm i
+# 3. Install project dependencies
+npm install
+# or
+yarn install
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# 4. Start the development server
 npm run dev
+# or
+yarn dev
+
+# 5. Build for production
+npm run build
+# or
+yarn build
+
+# 6. Preview the production build locally
+npm run preview
+# or
+yarn preview
 ```
 
-**Edit a file directly in GitHub**
+The app will be available during development at:  
+[http://localhost:5173](http://localhost:5173)
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 🧰 Tech Stack
 
-**Use GitHub Codespaces**
+- ⚛️ [React](https://reactjs.org/)
+- ⚡ [Vite](https://vitejs.dev/)
+- 🛡️ [TypeScript](https://www.typescriptlang.org/)
+- 💨 [Tailwind CSS](https://tailwindcss.com/)
+- 🎨 [shadcn-ui](https://ui.shadcn.com/)
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## 📁 Project Structure
 
-## What technologies are used for this project?
+```bash
+src/
+├── assets/        # Static assets
+├── components/    # Reusable UI components
+├── pages/         # Page-level components
+├── styles/        # Global and utility styles
+├── App.tsx        # Root component
+├── main.tsx       # Application entry point
+```
 
-This project is built with:
+## 🌐 Deployment
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+You can deploy this project to platforms like:
 
-## How can I deploy this project?
+- [Vercel](https://vercel.com/)
+- [Netlify](https://netlify.com/)
+- [Render](https://render.com/)
 
-Simply open [Lovable](https://lovable.dev/projects/46c15dd3-85db-4673-89d3-c0dd92c13533) and click on Share -> Publish.
+Just run the build command and follow the deployment instructions for your preferred platform.
 
-## Can I connect a custom domain to my Lovable project?
+## 📝 License
 
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+This project is licensed under the [MIT License](LICENSE).
