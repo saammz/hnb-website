@@ -1,6 +1,3 @@
-import React from 'react';
-
-// Import your feature icons
 import workflowIcon from '../assets/icons/Workflow.svg';
 import dataIntegrationIcon from '../assets/icons/Data.svg';
 import communicationIcon from '../assets/icons/Communication Collaboration.svg';

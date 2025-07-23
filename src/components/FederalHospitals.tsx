@@ -1,6 +1,4 @@
-import React from 'react';
 
-// Import your hospital logo images
 import uniportLogo from '../assets/images/image 3.svg';
 import unthEnuguLogo from '../assets/images/image 4.svg';
 import unthItukuLogo from '../assets/images/image 5.svg';

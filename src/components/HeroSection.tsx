@@ -1,13 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 
-// Import your SVG images
 import learnMoreNormal from '../assets/images/learn-more.svg';
 import learnMoreHover from '../assets/images/learn-more-hover.svg';
 import contactUs from '../assets/images/contact-us.svg';
 
-// Import your stat icons
 import activePatientIcon from '../assets/icons/FirstAid.svg';
 import attendingDoctorsIcon from '../assets/icons/HandHeart.svg';
 import encounterIcon from '../assets/icons/Hospital.svg';
@@ -131,7 +129,6 @@ const HeroSection = () => {
                       height: `${100 / slides.length}%`
                     }}
                   />
-                  {/* Previous slides with opacity */}
                   {slides.map((_, index) => (
                     <div
                       key={index}
@@ -155,7 +152,6 @@ const HeroSection = () => {
                   0{currentSlide + 1}/03
                 </span>
 
-                {/* Main heading with slide animation - only this animates */}
                 <div
                   key={`text-${currentSlide}`}
                   className={`transition-all duration-1000 ease-in-out ${getSlideAnimation(slides[currentSlide].direction)}`}

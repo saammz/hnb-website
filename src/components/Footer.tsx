@@ -1,4 +1,3 @@
-import React from 'react';
 import { ArrowUp, Mail, Phone } from 'lucide-react';
 
 import logo from '../assets/images/logo.svg';
@@ -22,7 +21,6 @@ const Footer = () => {
     <footer className="py-16 relative" style={{ backgroundColor: '#03210E' }}>
       <div className="container mx-auto px-6">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 lg:gap-16 items-start">
-          {/* First Column - Logo Only */}
           <div className="space-y-8">
             {/* Logo */}
             <div className="flex items-center">
@@ -94,7 +92,6 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Bottom Copyright */}
         <div className="mt-16 pt-8 border-t border-white/10">
           <p className="text-white/60 text-base text-center lg:text-right">
             © 2020. Health-in-a-box. All Rights Reserved.

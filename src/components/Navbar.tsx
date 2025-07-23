@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import loginButtonNormal from '../assets/images/login.svg';
 import loginButtonHover from '../assets/images/login-hover.svg';

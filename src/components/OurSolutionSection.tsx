@@ -1,7 +1,5 @@
-import React from 'react';
 import { Check } from 'lucide-react';
 
-// Import your image (same as about us)
 import aboutImage from '../assets/images/about-us.svg';
 
 const OurSolutionSection = () => {
