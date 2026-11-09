@@ -34,13 +34,13 @@ const FederalHospitals = () => {
       <div className="container mx-auto px-6">
         {/* Section Title */}
         <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-800 mb-12">
-          Federal Teaching Hospitals
+          Trusted by Leading Hospitals
         </h2>
 
         {/* Infinite Scrolling Container */}
         <div className="relative overflow-hidden">
           {/* CSS Animation Styles */}
-          <style jsx>{`
+          <style>{`
             @keyframes scroll-right {
               0% {
                 transform: translateX(0);

@@ -2,11 +2,11 @@ import Navbar from '@/components/Navbar';
 import HeroSection from '@/components/HeroSection';
 import FederalHospitals from '@/components/FederalHospitals';
 import AboutUsSection from '@/components/AboutUsSection';
-import ServicesSection from '@/components/OurSolutionSection';
-import PracticeSoftware from '@/components/PracticeSoftware';
+import OurServicesSection from '@/components/OurServicesSection';
+import TestDirectorySection from '@/components/TestDirectorySection';
+import WhyChooseUsSection from '@/components/WhyChooseUsSection';
+import HowItWorksSection from '@/components/HowItWorksSection';
 import Footer from '@/components/Footer';
-import OurFeaturesSection from '@/components/OurFeaturesSection';
-import ImpactSuccessSection from '@/components/ImpactSuccessSection';
 
 const Index = () => {
   return (
@@ -15,25 +15,22 @@ const Index = () => {
       <div id="hero">
         <HeroSection />
       </div>
-      <div id="federal-hospitals">
+      <div id="partners">
         <FederalHospitals />
       </div>
       <div id="about-us">
         <AboutUsSection />
       </div>
-      <div>
-        <OurFeaturesSection />
-      </div>
       <div id="services">
-        <ServicesSection />
+        <OurServicesSection />
       </div>
-      <div>
-        <ImpactSuccessSection />
+      <WhyChooseUsSection />
+      <div id="test-directory">
+        <TestDirectorySection />
       </div>
-      <div id="practice-software">
-        <PracticeSoftware />
+      <div id="how-it-works">
+        <HowItWorksSection />
       </div>
-
       <Footer />
     </div>
   );

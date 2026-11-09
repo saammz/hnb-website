@@ -99,21 +99,6 @@ All colors MUST be HSL.
 }
 
 @layer utilities {
-  .neumorphic {
-    background: linear-gradient(145deg, #f0f0f0, #cacaca);
-    box-shadow: 20px 20px 60px #bebebe, -20px -20px 60px #ffffff;
-  }
-  
-  .neumorphic-inset {
-    background: linear-gradient(145deg, #cacaca, #f0f0f0);
-    box-shadow: inset 20px 20px 60px #bebebe, inset -20px -20px 60px #ffffff;
-  }
-  
-  .neumorphic-dark {
-    background: linear-gradient(145deg, #1a1a1a, #2d2d2d);
-    box-shadow: 20px 20px 60px #0d0d0d, -20px -20px 60px #333333;
-  }
-  
   .glass-morphism {
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
