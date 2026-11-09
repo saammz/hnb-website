@@ -1,15 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { ArrowRight } from 'lucide-react';
-
-import learnMoreNormal from '../assets/images/learn-more.svg';
-import learnMoreHover from '../assets/images/learn-more-hover.svg';
-import contactUs from '../assets/images/contact-us.svg';
-
-import activePatientIcon from '../assets/icons/FirstAid.svg';
-import attendingDoctorsIcon from '../assets/icons/HandHeart.svg';
-import encounterIcon from '../assets/icons/Hospital.svg';
-import federalHospitalIcon from '../assets/icons/Stethoscope.svg';
+import { ArrowRight, FlaskConical, Users, Clock, Award } from 'lucide-react';
+import { scrollToSection } from '@/components/Navbar';
 
 import slide1Image from '../assets/images/bg-one.svg';
 import slide2Image from '../assets/images/bg-two.svg';
@@ -18,30 +10,29 @@ import slide3Image from '../assets/images/bg-three.svg';
 
 const HeroSection = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [isLearnMoreHovered, setIsLearnMoreHovered] = useState(false);
 
   const slides = [
     {
-      title: "Powering Nigeria's",
-      subtitle: "Digital Healthcare",
-      highlight: "Transformation",
-      description: "Lorem ipsum dolor sit amet consectetur. Risus cursus id feugiatadpiscing Pretium etiam feugiat feugiat cursus etiam. Leo gravidacursus id feugiat adipiscing. Pretium etiam feugiat feugiat cursus etiam",
+      title: "Accurate",
+      subtitle: "Diagnostics",
+      highlight: "You Can Trust",
+      description: "Fast, reliable laboratory testing you can trust. From routine blood work to specialised diagnostics, our accredited scientists deliver accurate results to support better care.",
       backgroundImage: slide1Image,
       direction: "left"
     },
     {
-      title: "Advanced Medical",
-      subtitle: "Technology",
-      highlight: "Solutions",
-      description: "Lorem ipsum dolor sit amet consectetur. Risus cursus id feugiatadpiscing Pretium etiam feugiat feugiat cursus etiam. Leo gravidacursus id feugiat adipiscing. Pretium etiam feugiat feugiat cursus etiam",
+      title: "Advanced",
+      subtitle: "Laboratory",
+      highlight: "Technology",
+      description: "Modern analysers, strict quality control and experienced medical laboratory scientists working together to give you and your doctor results you can act on.",
       backgroundImage: slide2Image,
       direction: "right"
     },
     {
-      title: "Comprehensive",
-      subtitle: "Healthcare",
-      highlight: "Platform",
-      description: "Lorem ipsum dolor sit amet consectetur. Risus cursus id feugiatadpiscing Pretium etiam feugiat feugiat cursus etiam. Leo gravidacursus id feugiat adipiscing. Pretium etiam feugiat feugiat cursus etiam",
+      title: "Convenient",
+      subtitle: "Testing",
+      highlight: "Made Simple",
+      description: "Book a test, visit any of our collection points or request home sample collection, and receive your results securely and on time.",
       backgroundImage: slide3Image,
       direction: "left"
     }
@@ -66,26 +57,10 @@ const HeroSection = () => {
   };
 
   const stats = [
-    {
-      icon: activePatientIcon,
-      number: "500k+",
-      label: "Active patient"
-    },
-    {
-      icon: attendingDoctorsIcon,
-      number: "1,500+",
-      label: "Attending Doctors"
-    },
-    {
-      icon: encounterIcon,
-      number: "1M+",
-      label: "Encounter"
-    },
-    {
-      icon: federalHospitalIcon,
-      number: "25+",
-      label: "Federal Hospital"
-    }
+    { icon: FlaskConical, number: "200+", label: "Tests Available" },
+    { icon: Users, number: "50k+", label: "Patients Served" },
+    { icon: Clock, number: "24hrs", label: "Typical Turnaround" },
+    { icon: Award, number: "10+", label: "Years of Experience" }
   ];
 
   const getSlideAnimation = (direction: string) => {
@@ -168,52 +143,24 @@ const HeroSection = () => {
                   {slides[currentSlide].description}
                 </p>
 
-                {/* CTA Buttons and Arrow Navigation - static, no animation */}
+                {/* CTA Buttons and Arrow Navigation */}
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 pt-14">
-                  <div className="flex gap-4">
-                    {/* Learn More Button with hover state */}
-                    <button
-                      className="relative transition-transform duration-200 ease-out hover:scale-105 focus:outline-none"
-                      onMouseEnter={() => setIsLearnMoreHovered(true)}
-                      onMouseLeave={() => setIsLearnMoreHovered(false)}
-                      onClick={() => {
-                        console.log('Learn More clicked');
-                      }}
-                      style={{
-                        background: 'none',
-                        border: 'none',
-                        padding: 0,
-                        cursor: 'pointer'
-                      }}
+                  <div className="flex flex-wrap gap-4">
+                    <Button
+                      size="lg"
+                      onClick={() => scrollToSection('services')}
+                      className="bg-emerald-500 hover:bg-emerald-600 text-white h-12 px-8 text-base"
                     >
-                      <img
-                        src={isLearnMoreHovered ? learnMoreHover : learnMoreNormal}
-                        alt="Learn More"
-                        className="h-[78px] object-contain"
-                        draggable={false}
-                      />
-                    </button>
-
-                    {/* Contact Us Button (no hover state) */}
-                    <button
-                      className="relative transition-transform duration-200 ease-out hover:scale-105 focus:outline-none"
-                      onClick={() => {
-                        console.log('Contact Us clicked');
-                      }}
-                      style={{
-                        background: 'none',
-                        border: 'none',
-                        padding: 0,
-                        cursor: 'pointer'
-                      }}
+                      Our Services
+                    </Button>
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      onClick={() => scrollToSection('contact')}
+                      className="bg-transparent border-white text-white hover:bg-white hover:text-gray-900 h-12 px-8 text-base"
                     >
-                      <img
-                        src={contactUs}
-                        alt="Contact Us"
-                        className="h-18 object-contain"
-                        draggable={false}
-                      />
-                    </button>
+                      Contact Us
+                    </Button>
                   </div>
 
                   {/* Arrow Navigation */}
@@ -262,11 +209,7 @@ const HeroSection = () => {
             >
               <div className="flex items-center space-x-4">
                 <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center">
-                  <img
-                    src={stat.icon}
-                    alt={stat.label}
-                    className="w-6 h-6 object-contain"
-                  />
+                  <stat.icon className="w-6 h-6 text-emerald-600" />
                 </div>
                 <div>
                   <div className="text-2xl font-bold text-white">{stat.number}</div>

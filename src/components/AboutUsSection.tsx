@@ -1,4 +1,3 @@
-import React from 'react';
 import { Check } from 'lucide-react';
 
 // Import your image
@@ -6,17 +5,17 @@ import aboutImage from '../assets/images/about-us.svg';
 
 const AboutUsSection = () => {
   const leftFeatures = [
-    "Features one",
-    "Figma ipsum componenting for",
-    "Features number three",
-    "Features four"
+    "Licensed medical laboratory scientists",
+    "Modern, calibrated equipment",
+    "Internal & external quality control",
+    "Same-day results for routine tests"
   ];
 
   const rightFeatures = [
-    "Features one",
-    "Features number three",
-    "Figma ipsum componenting for",
-    "Features four"
+    "Home & office sample collection",
+    "Confidential result delivery",
+    "Corporate & hospital partnerships",
+    "Friendly, patient-centred care"
   ];
 
   return (
@@ -29,7 +28,7 @@ const AboutUsSection = () => {
               {/* Main image with rounded corners */}
               <img
                 src={aboutImage}
-                alt="Healthcare professionals"
+                alt="Laboratory professionals"
                 className="w-full h-[500px] object-cover rounded-[24px]"
               />
 
@@ -40,9 +39,9 @@ const AboutUsSection = () => {
                     <div className="w-4 h-4 bg-emerald-500 rounded-sm"></div>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-900 text-base mb-1">Seamless operation</h4>
+                    <h4 className="font-semibold text-gray-900 text-base mb-1">Quality assured</h4>
                     <p className="text-sm text-gray-600 leading-relaxed">
-                      Figma ipsum component variant aimi main layer. Scrolling
+                      Every result is checked and verified before release.
                     </p>
                   </div>
                 </div>
@@ -55,9 +54,9 @@ const AboutUsSection = () => {
                     <Check className="w-4 h-4 text-emerald-500" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-900 text-base mb-1">10 years of experience</h4>
+                    <h4 className="font-semibold text-gray-900 text-base mb-1">10+ years of experience</h4>
                     <p className="text-sm text-gray-600 leading-relaxed">
-                      Figma ipsum component variant aimi main layer. Scrolling ipsuming valorin component variant aimi main
+                      Trusted by patients, doctors and hospitals for accurate diagnostics.
                     </p>
                   </div>
                 </div>
@@ -73,22 +72,19 @@ const AboutUsSection = () => {
                 <span className="text-emerald-500 font-medium text-sm tracking-wider uppercase border-l-4 border-emerald-500 pl-3">ABOUT US</span>
               </div>
               <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 leading-tight">
-                Revolutionizing{' '}
-                <span className="text-emerald-500">Healthcare</span>{' '}
-                Delivery
+                Your Partner in{' '}
+                <span className="text-emerald-500">Accurate</span>{' '}
+                Diagnostics
               </h2>
             </div>
 
             {/* Description */}
             <p className="text-gray-600 text-base leading-relaxed">
-              Health-in-a-box is an initiative of the Federal Ministry of Health to provide
-              a digital health information platform across the National Health System.
-              The primary goal is the real-time acquisition of health data through the
-              automation of all Tertiary Health Institutions (THIs) for improved
-              operational efficiency, human capacity management, national disease
-              reporting, revenue management, drug/other revolving fund
-              administration, and overall improvement in the quality of health care
-              services across the country.
+              We are a modern medical diagnostic laboratory committed to providing
+              accurate, timely and affordable testing for individuals, families,
+              clinics and hospitals. Our team of qualified medical laboratory
+              scientists uses up-to-date equipment and rigorous quality control
+              to deliver results that doctors and patients can rely on.
             </p>
 
             {/* Features List - Two columns */}
