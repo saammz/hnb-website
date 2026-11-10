@@ -10,14 +10,18 @@ This guide will help you set up, run, and build the project locally.
 
 Make sure you have the following installed on your system:
 
-- **Node.js** (v16 or later): https://nodejs.org  
+- **Node.js** (v22.12 or later): https://nodejs.org
 - **npm** (comes with Node.js) or **Yarn**
 
 To install Node.js using nvm:
 
 ```bash
-nvm install node
+nvm install 22
 ```
+
+The npm overrides keep typography's selector parser, Sucrase's Glob, and TypeScript
+ESLint's Minimatch on patched versions. Remove each override when its parent
+dependency requires a patched version itself.
 
 ### Setup, Run, and Build
 
