@@ -14,16 +14,21 @@ const authorizationUrl = 'https://sandbox.crosspoint.finance/checkout/cxp_c_test
 const originalFetch = globalThis.fetch;
 let originalEnv;
 let calls;
+let rateChecks;
 
 function request(body = { service_id: service.id, name: ' Test Patient ', email: 'test@example.com' }, options = {}) {
   return new Request(`${origin}/api/payments/create`, {
-    method: 'POST', headers: { origin, 'Content-Type': 'application/json' },
+    method: 'POST', headers: { origin, host: new URL(origin).host, 'x-real-ip': '203.0.113.10', 'Content-Type': 'application/json' },
     body: JSON.stringify(body), ...options,
   });
 }
 
 function upstream({ services = [service], pages = 1, checkout = {}, status = 201 } = {}) {
   globalThis.fetch = async (url, options) => {
+    if (String(url).includes('/.well-known/vercel/rate-limit-api/')) {
+      rateChecks++;
+      return new Response(null, { status: 204 });
+    }
     calls.push({ url: String(url), options });
     if (String(url).startsWith('https://catalogue.example/')) {
       return Response.json({ organization, page: Number(new URL(url).searchParams.get('page')), total_pages: pages, services });
@@ -38,8 +43,10 @@ beforeEach(() => {
   Object.assign(process.env, {
     CROSSPOINT_ACCESS_TOKEN: 'test-server-token', PAYMENT_SESSION_SECRET: 'a'.repeat(64),
     APP_ORIGIN: origin, SERVICES_API_URL: 'https://catalogue.example/public-services', ORG_SLUG: 'darlez',
+    NODE_ENV: 'production',
   });
   calls = [];
+  rateChecks = 0;
   upstream();
 });
 
@@ -141,11 +148,16 @@ test('accepts amounts at the documented boundaries and decimal naira', async () 
 test('handles missing services, catalogue failures and wrong organizations', async () => {
   upstream({ services: [] });
   assert.equal((await handler.fetch(request())).status, 404);
-  globalThis.fetch = async () => Response.json({ error: 'private upstream detail' }, { status: 500 });
+  globalThis.fetch = async (url) => String(url).includes('/.well-known/vercel/rate-limit-api/')
+    ? new Response(null, { status: 204 }) : Response.json({ error: 'private upstream detail' }, { status: 500 });
   assert.equal((await handler.fetch(request())).status, 502);
-  globalThis.fetch = async () => Response.json({ organization: { ...organization, slug: 'wrong-store' }, page: 1, total_pages: 1, services: [service] });
+  globalThis.fetch = async (url) => String(url).includes('/.well-known/vercel/rate-limit-api/')
+    ? new Response(null, { status: 204 }) : Response.json({ organization: { ...organization, slug: 'wrong-store' }, page: 1, total_pages: 1, services: [service] });
   assert.equal((await handler.fetch(request())).status, 502);
-  globalThis.fetch = async () => { throw new Error('timeout'); };
+  globalThis.fetch = async (url) => {
+    if (String(url).includes('/.well-known/vercel/rate-limit-api/')) return new Response(null, { status: 204 });
+    throw new Error('timeout');
+  };
   assert.equal((await handler.fetch(request())).status, 502);
 });
 
@@ -173,7 +185,64 @@ test('rejects mismatched references and unsafe redirect URLs from upstream', asy
 
 test('uses non-Secure cookies only for explicitly configured local HTTP development', async () => {
   process.env.APP_ORIGIN = 'http://localhost:3000';
-  const response = await handler.fetch(request(undefined, { headers: { origin: process.env.APP_ORIGIN, 'Content-Type': 'application/json' } }));
+  const response = await handler.fetch(request(undefined, { headers: { origin: process.env.APP_ORIGIN, 'x-real-ip': '203.0.113.10', 'Content-Type': 'application/json' } }));
   assert.equal(response.status, 201);
   assert.ok(!response.headers.get('Set-Cookie').includes('; Secure'));
+});
+
+test('rate-limited requests return 429 without any catalogue or Crosspoint calls', async () => {
+  const allowedFetch = globalThis.fetch;
+  globalThis.fetch = async (url, options) => {
+    if (!String(url).includes('/.well-known/vercel/rate-limit-api/')) return allowedFetch(url, options);
+    assert.equal(String(url), `${origin}/.well-known/vercel/rate-limit-api/hnb-checkout-create`);
+    assert.equal(options.headers.get('x-vercel-rate-limit-api'), 'hnb-checkout-create');
+    rateChecks++;
+    return new Response(null, { status: rateChecks <= 5 ? 204 : 429 });
+  };
+  for (let i = 0; i < 5; i++) {
+    const response = await handler.fetch(request());
+    assert.equal(response.status, 201);
+  }
+  const upstreamCallsBeforeLimit = calls.length;
+  assert.equal(upstreamCallsBeforeLimit, 10);
+  const blocked = await handler.fetch(request());
+  assert.equal(blocked.status, 429);
+  assert.equal(blocked.headers.get('Retry-After'), '60');
+  assert.equal(blocked.headers.get('Cache-Control'), 'no-store');
+  assert.equal(blocked.headers.get('Set-Cookie'), null);
+  assert.match((await blocked.json()).error, /Too many checkout attempts/);
+  assert.equal(rateChecks, 6);
+  assert.equal(calls.length, upstreamCallsBeforeLimit);
+});
+
+test('missing or unavailable firewall protection fails closed before any business upstream calls', async () => {
+  for (const status of [404, 500, 302]) {
+    let requests = 0;
+    globalThis.fetch = async (url) => {
+      assert.ok(String(url).includes('/.well-known/vercel/rate-limit-api/'));
+      requests++;
+      return new Response(null, { status });
+    };
+    assert.equal((await handler.fetch(request())).status, 503);
+    assert.equal(requests, 1);
+  }
+  globalThis.fetch = async () => { throw new Error('Firewall timeout'); };
+  assert.equal((await handler.fetch(request())).status, 503);
+  process.env.NODE_ENV = 'development';
+  delete process.env.CHECKOUT_FIREWALL_HOST;
+  globalThis.fetch = async () => { assert.fail('No network call without development firewall configuration'); };
+  assert.equal((await handler.fetch(request())).status, 503);
+  assert.equal(calls.length, 0);
+});
+
+test('development explicitly checks the configured deployed firewall instead of the SDK allow-all default', async () => {
+  process.env.NODE_ENV = 'development';
+  process.env.CHECKOUT_FIREWALL_HOST = 'hnb-dev.example';
+  globalThis.fetch = async (url, options) => {
+    assert.equal(String(url), 'https://hnb-dev.example/.well-known/vercel/rate-limit-api/hnb-checkout-create');
+    assert.ok(options.headers.get('x-vercel-rate-limit-key').startsWith('hnb-local-development-'));
+    return new Response(null, { status: 429 });
+  };
+  assert.equal((await handler.fetch(request())).status, 429);
+  assert.equal(calls.length, 0);
 });

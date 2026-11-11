@@ -177,9 +177,11 @@ test('uses the signed original amount even if catalogue prices later change', as
 });
 
 test('checkout creation and verification work together using the returned cookie', async () => {
+  process.env.NODE_ENV = 'production';
   let initialized;
   process.env.SERVICES_API_URL = 'https://catalogue.example/public-services';
   globalThis.fetch = async (url, options) => {
+    if (String(url).includes('/.well-known/vercel/rate-limit-api/')) return new Response(null, { status: 204 });
     if (String(url).includes('catalogue.example')) return Response.json({ organization: context.organization, page: 1, total_pages: 1, services: [{ ...context.service, walkin_price: 17000 }] });
     if (options.method === 'POST') {
       initialized = JSON.parse(options.body);
@@ -188,7 +190,7 @@ test('checkout creation and verification work together using the returned cookie
     return Response.json({ ...paid, reference: initialized.reference, metadata: { ...initialized.metadata, reference: initialized.reference } });
   };
   const created = await createHandler.fetch(new Request(`${origin}/api/payments/create`, {
-    method: 'POST', headers: { origin, 'Content-Type': 'application/json' },
+    method: 'POST', headers: { origin, host: new URL(origin).host, 'x-real-ip': '203.0.113.10', 'Content-Type': 'application/json' },
     body: JSON.stringify({ service_id: context.service.id, name: 'Test Patient', email: 'patient@example.com' }),
   }));
   assert.equal(created.status, 201);

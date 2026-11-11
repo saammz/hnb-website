@@ -17,6 +17,10 @@ the remaining acceptance checks below before treating this as ready for patients
   cannot supply the payment amount.
 - Vercel functions for Crosspoint sandbox checkout creation and verification,
   server-only credentials and a signed 24-hour browser payment context.
+- Checkout creation checks the shared Vercel Firewall rate limit before catalogue
+  lookup or payment creation. Rate-limited requests return `429`; missing or
+  unavailable protection returns `503`. The deployed firewall rule must be published
+  by the project owner as described below.
 - `/payment/result` with verification, pending-payment polling, checkout-resume
   links and recovery messages. Verification checks reference, checkout ID, amount,
   currency and service/organization metadata before handoff.
@@ -180,12 +184,60 @@ server settings in Vercel's project environment variables for deployments:
 | `APP_ORIGIN` | `http://localhost:3000` locally; `https://hnb-website-woad.vercel.app` for that deployment |
 | `SERVICES_API_URL` | Defaults to `https://api-prod.lightbasemr.com/public-services` |
 | `ORG_SLUG` | Defaults to `darlez` |
+| `CHECKOUT_FIREWALL_HOST` | Local development only: deployed Vercel hostname with the published checkout rate-limit rule; no scheme/path |
 
 Generate the session secret locally with `openssl rand -hex 32`. Never prefix these
 server variables with `VITE_`, expose them in browser code, or commit them.
 For Vercel previews, set `APP_ORIGIN` to the exact preview origin used for testing.
 The server and frontend catalogue configuration must refer to the same organization.
 Redeploy after changing deployed environment variables.
+
+### Checkout abuse protection — required project setup
+
+The `Origin` check prevents cross-origin browser requests; it does not authenticate
+automated clients. After validating the request body and before any catalogue or
+Crosspoint call, creation uses `@vercel/firewall` to check the shared rule
+**hnb-checkout-create**. No per-process counter or allow-all fallback is used.
+
+The owner of **each deployment project** must configure and publish this rule:
+
+1. Open the project's **Firewall → Configure → New Rule**.
+2. Select the **@vercel/firewall** condition, with Rate limit ID
+   **hnb-checkout-create**. Do not add a path condition matching the original API
+   URL: the SDK calls Vercel's rate-limit endpoint on its behalf.
+3. Configure a fixed 60-second window with **5 requests** and a rate-limit/429
+   action. Keep the default client-IP bucket; do not use log-only mode.
+4. Save, review and publish the rule. The application and rule must exist on the
+   intended Vercel project; the separate local-development project does not
+   configure the boss's project.
+5. Test on the deployment: the sixth valid creation attempt within the window
+   must return `429`, not create another checkout. These checks create sandbox
+   sessions, so use sandbox credentials. Confirm missing rules fail with `503`.
+
+The function passes Vercel's client-IP headers to the SDK and uses the configured
+`APP_ORIGIN` host rather than a caller-selected host. Counters are shared across
+function instances but are regional, as documented by Vercel. IP limits can also
+group people sharing a network; adjust the published threshold only after observing
+legitimate traffic. Rate limiting is not authentication or complete DDoS protection.
+
+For local `dev:vercel`, set `CHECKOUT_FIREWALL_HOST` to a deployed hostname with
+this published rule (for example, your separate development project's hostname).
+Local requests use one shared **hnb-local-development** bucket. Without this host,
+the SDK would skip enforcement in development; HNB explicitly blocks with `503`
+instead. Preview/protected deployments may also need Vercel's automation bypass
+and exposed system environment variables configured according to the SDK docs.
+
+Over-limit responses contain a readable JSON error and `Retry-After: 60`. A
+missing rule, malformed firewall response or timeout (1.5 seconds) fails closed
+with `503` and makes no EMR/Crosspoint calls. Invalid requests rejected before the
+guard do not consume the SDK rule's quota. Verification is separate and is not
+throttled by the checkout-creation rule.
+
+See [Vercel's Rate Limiting SDK documentation](https://vercel.com/docs/vercel-firewall/vercel-waf/rate-limiting-sdk).
+Server tests mock the SDK's HTTP responses and cover five allowed requests, the
+sixth blocked request with no additional business upstream calls, firewall failures,
+and explicit local-development configuration. Actual deployed enforcement still
+requires the project rule and a deployment acceptance check.
 
 ### Local development and checks
 
@@ -205,7 +257,8 @@ HTML to be parsed as JavaScript. Restart `dev:vercel` after routing changes.
 
 Run `npm run test:payments` for mocked upstream tests, `npm run lint` for static
 checks, and `npm run build` for the frontend build. Tests do not use your token or
-create real sandbox checkouts. No new application dependency is required.
+create real sandbox checkouts. `@vercel/firewall` supplies shared server-side rate
+checks; the tests also mock its HTTP requests.
 
 ### Test booking — Phase 2
 

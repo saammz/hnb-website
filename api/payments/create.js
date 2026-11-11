@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { z } from 'zod';
 import { json, paymentConfig, paymentCookie, SANDBOX_API } from '../../server/payment-session.js';
+import { checkoutRateLimit } from '../../server/checkout-rate-limit.js';
 
 const inputSchema = z.object({
   service_id: z.string().regex(/^[a-f\d]{24}$/i),
@@ -57,6 +58,9 @@ async function createCheckout(request) {
   } catch {
     return json(400, { error: 'Provide a valid service ID, name and email only.' });
   }
+
+  const limited = await checkoutRateLimit(request);
+  if (limited) return limited;
 
   const slug = process.env.ORG_SLUG || 'darlez';
   const servicesUrl = process.env.SERVICES_API_URL || 'https://api-prod.lightbasemr.com/public-services';
