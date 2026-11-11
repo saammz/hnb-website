@@ -7,6 +7,7 @@ export interface PublicService {
   department: string;
   category: string;
   name: string;
+  walkin_price?: number | null;
 }
 
 export interface PublicServicesResponse {

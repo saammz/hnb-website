@@ -3,6 +3,7 @@ import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { Check, ChevronLeft, ChevronRight, Search, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import BookingDialog from '@/components/BookingDialog';
 import { fetchPublicServices } from '@/lib/services-api';
 import { scrollToSection } from '@/components/Navbar';
 
@@ -65,6 +66,7 @@ const TestDirectorySection = () => {
           </h2>
           <p className="text-gray-600 text-base leading-relaxed">
             Search our complete list of tests and diagnostic services, or filter by department.
+            Choose a test to book, then review the price and pay on our secure checkout.
             Contact us for preparation guidance or availability.
           </p>
         </div>
@@ -139,12 +141,19 @@ const TestDirectorySection = () => {
               {services.map((service) => (
                 <li
                   key={service.id}
-                  className="flex items-start gap-3 bg-white border border-gray-200 rounded-xl p-4 hover:border-emerald-400 transition-colors"
+                  className="flex flex-col gap-5 bg-white border border-gray-200 rounded-xl p-5 hover:border-emerald-400 transition-colors"
                 >
-                  <span className="w-5 h-5 bg-emerald-500 rounded flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <Check className="w-3 h-3 text-white" />
-                  </span>
-                  <span className="text-gray-800 text-sm font-medium leading-snug">{service.name}</span>
+                  <div className="flex items-start gap-3">
+                    <span className="w-8 h-8 bg-emerald-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Check className="w-4 h-4 text-emerald-600" aria-hidden="true" />
+                    </span>
+                    <div className="min-w-0">
+                      <h3 className="text-gray-900 font-semibold leading-snug break-words">{service.name}</h3>
+                      <p className="mt-2 text-sm text-gray-600 break-words">{service.department}</p>
+                      <p className="mt-1 text-xs text-emerald-700">{service.category}</p>
+                    </div>
+                  </div>
+                  <BookingDialog service={service} />
                 </li>
               ))}
             </ul>
