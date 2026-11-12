@@ -1,4 +1,6 @@
-import Navbar from '@/components/Navbar';
+import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import Navbar, { scrollToSection } from '@/components/Navbar';
 import HeroSection from '@/components/HeroSection';
 import FederalHospitals from '@/components/FederalHospitals';
 import AboutUsSection from '@/components/AboutUsSection';
@@ -9,6 +11,10 @@ import HowItWorksSection from '@/components/HowItWorksSection';
 import Footer from '@/components/Footer';
 
 const Index = () => {
+  const { hash } = useLocation();
+  useEffect(() => {
+    if (hash === '#test-directory' || hash === '#contact') scrollToSection(hash.slice(1));
+  }, [hash]);
   return (
     <div className="min-h-screen">
       <Navbar />
